@@ -47,10 +47,10 @@ struct StartSpanOptions
   //
   // This defaults to an invalid span context. In this case, the Span is
   // automatically parented to the currently active span.
-  SpanContext parent = SpanContext::GetInvalid();
+  SpanReference parent = SpanReference::GetInvalid();
 
   // TODO:
-  // SpanContext remote_parent;
+  // SpanReference remote_parent;
   // Links
   SpanKind kind = SpanKind::kInternal;
 };
@@ -158,7 +158,7 @@ public:
    */
   virtual void End(const EndSpanOptions &options = {}) noexcept = 0;
 
-  virtual trace::SpanContext GetContext() const noexcept = 0;
+  virtual trace::SpanReference GetContext() const noexcept = 0;
 
   // Returns true if this Span is recording tracing events (e.g. SetAttribute,
   // AddEvent).

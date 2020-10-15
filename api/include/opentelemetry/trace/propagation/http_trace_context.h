@@ -65,7 +65,7 @@ public:
 
   void Inject(Setter setter, T &carrier, const context::Context &context) noexcept override
   {
-    SpanContext span_context = GetCurrentSpan(context);
+    SpanReference span_context = GetCurrentSpan(context);
     if (!span_context.IsValid())
     {
       return;
@@ -77,13 +77,13 @@ public:
                            const T &carrier,
                            context::Context &context) noexcept override
   {
-    SpanContext span_context    = ExtractImpl(getter, carrier);
+    SpanReference span_context  = ExtractImpl(getter, carrier);
     nostd::string_view span_key = "current-span";
     nostd::shared_ptr<Span> sp{new DefaultSpan(span_context)};
     return context.SetValue(span_key, sp);
   }
 
-  static SpanContext GetCurrentSpan(const context::Context &context)
+  static SpanReference GetCurrentSpan(const context::Context &context)
   {
     const nostd::string_view span_key = "current-span";
     context::Context ctx(context);
@@ -92,7 +92,7 @@ public:
     {
       return nostd::get<nostd::shared_ptr<Span>>(span).get()->GetContext();
     }
-    return SpanContext::GetInvalid();
+    return SpanReference::GetInvalid();
   }
 
   static TraceId GenerateTraceIdFromString(nostd::string_view trace_id)
@@ -176,7 +176,7 @@ private:
     }
   }
 
-  static void InjectTraceParent(const SpanContext &span_context, T &carrier, Setter setter)
+  static void InjectTraceParent(const SpanReference &span_context, T &carrier, Setter setter)
   {
     char trace_id[32];
     TraceId(span_context.trace_id()).ToLowerBase16(trace_id);
@@ -203,7 +203,7 @@ private:
     setter(carrier, kTraceParent, hex_string);
   }
 
-  static void InjectImpl(Setter setter, T &carrier, const SpanContext &span_context)
+  static void InjectImpl(Setter setter, T &carrier, const SpanReference &span_context)
   {
     InjectTraceParent(span_context, carrier, setter);
   }
@@ -219,7 +219,7 @@ private:
     return true;
   }
 
-  static SpanContext ExtractContextFromTraceParent(nostd::string_view trace_parent)
+  static SpanReference ExtractContextFromTraceParent(nostd::string_view trace_parent)
   {
     if (trace_parent.length() != kHeaderSize || trace_parent[kHeaderElementLengths[0]] != '-' ||
         trace_parent[kHeaderElementLengths[0] + kHeaderElementLengths[1] + 1] != '-' ||
@@ -227,7 +227,7 @@ private:
                      kHeaderElementLengths[2] + 2] != '-')
     {
       std::cout << "Unparseable trace_parent header. Returning INVALID span context." << std::endl;
-      return SpanContext(false, false);
+      return SpanReference(false, false);
     }
     nostd::string_view version = trace_parent.substr(0, kHeaderElementLengths[0]);
     nostd::string_view trace_id =
@@ -240,28 +240,28 @@ private:
     if (version == "ff" || trace_id == "00000000000000000000000000000000" ||
         span_id == "0000000000000000")
     {
-      return SpanContext(false, false);
+      return SpanReference(false, false);
     }
 
     // validate ids
     if (!IsValidHex(version) || !IsValidHex(trace_id) || !IsValidHex(span_id) ||
         !IsValidHex(trace_flags))
     {
-      return SpanContext(false, false);
+      return SpanReference(false, false);
     }
 
     TraceId trace_id_obj       = GenerateTraceIdFromString(trace_id);
     SpanId span_id_obj         = GenerateSpanIdFromString(span_id);
     TraceFlags trace_flags_obj = GenerateTraceFlagsFromString(trace_flags);
-    return SpanContext(trace_id_obj, span_id_obj, trace_flags_obj, true);
+    return SpanReference(trace_id_obj, span_id_obj, trace_flags_obj, true);
   }
 
-  static SpanContext ExtractImpl(Getter getter, const T &carrier)
+  static SpanReference ExtractImpl(Getter getter, const T &carrier)
   {
     nostd::string_view trace_parent = getter(carrier, kTraceParent);
     if (trace_parent == "")
     {
-      return SpanContext(false, false);
+      return SpanReference(false, false);
     }
 
     return ExtractContextFromTraceParent(trace_parent);

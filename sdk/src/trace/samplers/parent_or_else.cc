@@ -11,7 +11,7 @@ ParentOrElseSampler::ParentOrElseSampler(std::shared_ptr<Sampler> delegate_sampl
 {}
 
 SamplingResult ParentOrElseSampler::ShouldSample(
-    const trace_api::SpanContext *parent_context,
+    const trace_api::SpanReference *parent_context,
     trace_api::TraceId trace_id,
     nostd::string_view name,
     trace_api::SpanKind span_kind,

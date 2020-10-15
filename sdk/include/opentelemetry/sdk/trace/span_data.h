@@ -58,12 +58,12 @@ private:
 
 /**
  * Class for storing links in SpanData.
- * TODO: Add getters for trace_id, span_id and trace_state when these are supported by SpanContext
+ * TODO: Add getters for trace_id, span_id and trace_state when these are supported by SpanReference
  */
 class SpanDataLink
 {
 public:
-  SpanDataLink(opentelemetry::trace::SpanContext span_context,
+  SpanDataLink(opentelemetry::trace::SpanReference span_context,
                const trace_api::KeyValueIterable &attributes)
       : span_context_(span_context), attribute_map_(attributes)
   {}
@@ -78,7 +78,7 @@ public:
   }
 
 private:
-  opentelemetry::trace::SpanContext span_context_;
+  opentelemetry::trace::SpanReference span_context_;
   AttributeMap attribute_map_;
 };
 
@@ -180,7 +180,7 @@ public:
     events_.push_back(event);
   }
 
-  void AddLink(opentelemetry::trace::SpanContext span_context,
+  void AddLink(opentelemetry::trace::SpanReference span_context,
                const trace_api::KeyValueIterable &attributes) noexcept override
   {
     SpanDataLink link(span_context, attributes);

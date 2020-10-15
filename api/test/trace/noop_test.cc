@@ -9,7 +9,7 @@
 
 using opentelemetry::core::SystemTimestamp;
 using opentelemetry::trace::NoopTracer;
-using opentelemetry::trace::SpanContext;
+using opentelemetry::trace::SpanReference;
 using opentelemetry::trace::Tracer;
 
 TEST(NoopTest, UseNoopTracers)

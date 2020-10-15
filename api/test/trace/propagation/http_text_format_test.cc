@@ -68,7 +68,7 @@ TEST(HTTPTextFormatTest, NoSendEmptyTraceState)
       {"traceparent", "00-4bf92f3577b34da6a3ce929d0e0e4736-0102030405060708-01"}};
   context::Context ctx1 = context::Context{
       "current-span",
-      nostd::shared_ptr<trace::Span>(new trace::DefaultSpan(trace::SpanContext::GetInvalid()))};
+      nostd::shared_ptr<trace::Span>(new trace::DefaultSpan(trace::SpanReference::GetInvalid()))};
   context::Context ctx2                 = format.Extract(Getter, carrier, ctx1);
   std::map<std::string, std::string> c2 = {};
   format.Inject(Setter, c2, ctx2);
@@ -82,7 +82,7 @@ TEST(HTTPTextFormatTest, PropagateInvalidContext)
   std::map<std::string, std::string> carrier = {};
   context::Context ctx{
       "current-span",
-      nostd::shared_ptr<trace::Span>(new trace::DefaultSpan(trace::SpanContext::GetInvalid()))};
+      nostd::shared_ptr<trace::Span>(new trace::DefaultSpan(trace::SpanReference::GetInvalid()))};
   format.Inject(Setter, carrier, ctx);
   EXPECT_TRUE(carrier.count("traceparent") == 0);
 }

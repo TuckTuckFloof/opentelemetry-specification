@@ -11,9 +11,9 @@ class DefaultSpan : public Span
 {
 public:
   // Returns an invalid span.
-  static DefaultSpan GetInvalid() { return DefaultSpan(SpanContext::GetInvalid()); }
+  static DefaultSpan GetInvalid() { return DefaultSpan(SpanReference::GetInvalid()); }
 
-  trace::SpanContext GetContext() const noexcept { return span_context_; }
+  trace::SpanReference GetContext() const noexcept { return span_context_; }
 
   bool IsRecording() const noexcept { return false; }
 
@@ -41,14 +41,14 @@ public:
 
   nostd::string_view ToString() { return "DefaultSpan"; }
 
-  DefaultSpan(SpanContext span_context) : span_context_(span_context) {}
+  DefaultSpan(SpanReference span_context) : span_context_(span_context) {}
 
   // movable and copiable
   DefaultSpan(DefaultSpan &&spn) : span_context_(spn.GetContext()) {}
   DefaultSpan(const DefaultSpan &spn) : span_context_(spn.GetContext()) {}
 
 private:
-  SpanContext span_context_;
+  SpanReference span_context_;
 };
 
 }  // namespace trace

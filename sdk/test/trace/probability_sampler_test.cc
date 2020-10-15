@@ -8,7 +8,7 @@
 using opentelemetry::sdk::common::Random;
 using opentelemetry::sdk::trace::Decision;
 using opentelemetry::sdk::trace::ProbabilitySampler;
-using opentelemetry::trace::SpanContext;
+using opentelemetry::trace::SpanReference;
 
 namespace
 {
@@ -24,7 +24,9 @@ namespace
  * generate a random trace_id and check if it should sample using the provided
  * provider and context
  */
-int RunShouldSampleCountDecision(SpanContext &context, ProbabilitySampler &sampler, int iterations)
+int RunShouldSampleCountDecision(SpanReference &context,
+                                 ProbabilitySampler &sampler,
+                                 int iterations)
 {
   int actual_count = 0;
 
@@ -103,10 +105,10 @@ TEST(ProbabilitySampler, ShouldSampleWithContext)
 {
   opentelemetry::trace::TraceId trace_id;
   opentelemetry::trace::SpanKind span_kind = opentelemetry::trace::SpanKind::kInternal;
-  SpanContext c1(false, false);
-  SpanContext c2(true, false);
-  SpanContext c3(false, true);
-  SpanContext c4(true, true);
+  SpanReference c1(false, false);
+  SpanReference c2(true, false);
+  SpanReference c3(false, true);
+  SpanReference c4(true, true);
 
   using M = std::map<std::string, int>;
   M m1    = {{}};
@@ -142,7 +144,7 @@ TEST(ProbabilitySampler, ProbabilitySamplerHalf)
   int expected_count = static_cast<int>(iterations * probability);
   int variance       = static_cast<int>(iterations * 0.01);
 
-  SpanContext c(true, true);
+  SpanReference c(true, true);
   ProbabilitySampler s(probability);
 
   int actual_count = RunShouldSampleCountDecision(c, s, iterations);
@@ -158,7 +160,7 @@ TEST(ProbabilitySampler, ProbabilitySamplerOnePercent)
   int expected_count = static_cast<int>(iterations * probability);
   int variance       = static_cast<int>(iterations * 0.01);
 
-  SpanContext c(true, true);
+  SpanReference c(true, true);
   ProbabilitySampler s(probability);
 
   int actual_count = RunShouldSampleCountDecision(c, s, iterations);
@@ -173,7 +175,7 @@ TEST(ProbabilitySampler, ProbabilitySamplerAll)
   int iterations     = 100000;
   int expected_count = static_cast<int>(iterations * probability);
 
-  SpanContext c(true, true);
+  SpanReference c(true, true);
   ProbabilitySampler s(probability);
 
   int actual_count = RunShouldSampleCountDecision(c, s, iterations);
@@ -187,7 +189,7 @@ TEST(ProbabilitySampler, ProbabilitySamplerNone)
   int iterations     = 100000;
   int expected_count = static_cast<int>(iterations * probability);
 
-  SpanContext c(true, true);
+  SpanReference c(true, true);
   ProbabilitySampler s(probability);
 
   int actual_count = RunShouldSampleCountDecision(c, s, iterations);

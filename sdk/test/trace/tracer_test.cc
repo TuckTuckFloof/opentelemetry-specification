@@ -15,7 +15,7 @@ namespace nostd  = opentelemetry::nostd;
 namespace common = opentelemetry::common;
 using opentelemetry::exporter::memory::InMemorySpanData;
 using opentelemetry::exporter::memory::InMemorySpanExporter;
-using opentelemetry::trace::SpanContext;
+using opentelemetry::trace::SpanReference;
 
 /**
  * A mock sampler that returns non-empty sampling results attributes.
@@ -23,7 +23,7 @@ using opentelemetry::trace::SpanContext;
 class MockSampler final : public Sampler
 {
 public:
-  SamplingResult ShouldSample(const SpanContext * /*parent_context*/,
+  SamplingResult ShouldSample(const SpanReference * /*parent_context*/,
                               trace_api::TraceId /*trace_id*/,
                               nostd::string_view /*name*/,
                               trace_api::SpanKind /*span_kind*/,

@@ -10,12 +10,12 @@ namespace
 {
 
 using opentelemetry::trace::DefaultSpan;
-using opentelemetry::trace::SpanContext;
+using opentelemetry::trace::SpanReference;
 
 TEST(DefaultSpanTest, GetContext)
 {
-  SpanContext span_context = SpanContext(false, false);
-  DefaultSpan sp           = DefaultSpan(span_context);
+  SpanReference span_context = SpanReference(false, false);
+  DefaultSpan sp             = DefaultSpan(span_context);
   EXPECT_EQ(span_context, sp.GetContext());
 }
 }  // namespace

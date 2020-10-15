@@ -30,7 +30,7 @@ std::shared_ptr<Sampler> Tracer::GetSampler() const noexcept
   return sampler_;
 }
 
-trace_api::SpanContext GetCurrentSpanContext(const trace_api::SpanContext &explicit_parent)
+trace_api::SpanReference GetCurrentSpanReference(const trace_api::SpanReference &explicit_parent)
 {
   // Use the explicit parent, if it's valid.
   if (explicit_parent.IsValid())
@@ -47,8 +47,8 @@ trace_api::SpanContext GetCurrentSpanContext(const trace_api::SpanContext &expli
     return curr_span->GetContext();
   }
 
-  // Otherwise return an invalid SpanContext.
-  return trace_api::SpanContext::GetInvalid();
+  // Otherwise return an invalid SpanReference.
+  return trace_api::SpanReference::GetInvalid();
 }
 
 nostd::shared_ptr<trace_api::Span> Tracer::StartSpan(
@@ -56,7 +56,7 @@ nostd::shared_ptr<trace_api::Span> Tracer::StartSpan(
     const trace_api::KeyValueIterable &attributes,
     const trace_api::StartSpanOptions &options) noexcept
 {
-  trace_api::SpanContext parent = GetCurrentSpanContext(options.parent);
+  trace_api::SpanReference parent = GetCurrentSpanReference(options.parent);
 
   // TODO: replace nullptr with parent context in span context
   auto sampling_result =

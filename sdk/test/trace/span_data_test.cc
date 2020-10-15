@@ -85,7 +85,7 @@ TEST(SpanData, Links)
       {keys[0], values[0]}, {keys[1], values[1]}, {keys[2], values[2]}};
 
   data.AddLink(
-      opentelemetry::trace::SpanContext(false, false),
+      opentelemetry::trace::SpanReference(false, false),
       opentelemetry::trace::KeyValueIterableView<std::map<std::string, int64_t>>(attributes));
 
   for (int i = 0; i < kNumAttributes; i++)

@@ -123,7 +123,7 @@ TEST(Recordable, AddLink)
   std::map<std::string, int> attributes = {
       {keys[0], values[0]}, {keys[1], values[1]}, {keys[2], values[2]}};
 
-  rec.AddLink(trace::SpanContext(false, false),
+  rec.AddLink(trace::SpanReference(false, false),
               trace::KeyValueIterableView<std::map<std::string, int>>(attributes));
 
   for (int i = 0; i < kNumAttributes; i++)

@@ -132,7 +132,7 @@ void Recordable::AddEvent(nostd::string_view name,
   });
 }
 
-void Recordable::AddLink(opentelemetry::trace::SpanContext span_context,
+void Recordable::AddLink(opentelemetry::trace::SpanReference span_context,
                          const trace::KeyValueIterable &attributes) noexcept
 {
   auto *link = span_.add_links();
@@ -140,7 +140,7 @@ void Recordable::AddLink(opentelemetry::trace::SpanContext span_context,
     PopulateAttribute(link->add_attributes(), key, value);
     return true;
   });
-  // TODO: Populate trace_id, span_id and trace_state when these are supported by SpanContext
+  // TODO: Populate trace_id, span_id and trace_state when these are supported by SpanReference
 }
 
 void Recordable::SetStatus(trace::CanonicalCode code, nostd::string_view description) noexcept

@@ -25,7 +25,7 @@ class NoopSpan final : public Span
 {
 public:
   explicit NoopSpan(const std::shared_ptr<Tracer> &tracer) noexcept
-      : tracer_{tracer}, span_context_{SpanContext::GetInvalid()}
+      : tracer_{tracer}, span_context_{SpanReference::GetInvalid()}
   {}
 
   void SetAttribute(nostd::string_view /*key*/,
@@ -50,11 +50,11 @@ public:
 
   bool IsRecording() const noexcept override { return false; }
 
-  SpanContext GetContext() const noexcept override { return span_context_; }
+  SpanReference GetContext() const noexcept override { return span_context_; }
 
 private:
   std::shared_ptr<Tracer> tracer_;
-  SpanContext span_context_;
+  SpanReference span_context_;
 };
 
 /**

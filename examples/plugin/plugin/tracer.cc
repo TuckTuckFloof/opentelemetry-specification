@@ -20,7 +20,7 @@ public:
        nostd::string_view name,
        const opentelemetry::trace::KeyValueIterable & /*attributes*/,
        const trace::StartSpanOptions & /*options*/) noexcept
-      : tracer_{std::move(tracer)}, name_{name}, span_context_{trace::SpanContext::GetInvalid()}
+      : tracer_{std::move(tracer)}, name_{name}, span_context_{trace::SpanReference::GetInvalid()}
   {
     std::cout << "StartSpan: " << name << "\n";
   }
@@ -52,12 +52,12 @@ public:
 
   bool IsRecording() const noexcept override { return true; }
 
-  trace::SpanContext GetContext() const noexcept override { return span_context_; }
+  trace::SpanReference GetContext() const noexcept override { return span_context_; }
 
 private:
   std::shared_ptr<Tracer> tracer_;
   std::string name_;
-  trace::SpanContext span_context_;
+  trace::SpanReference span_context_;
 };
 }  // namespace
 

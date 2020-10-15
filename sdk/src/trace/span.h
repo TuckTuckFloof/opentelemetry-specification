@@ -20,7 +20,7 @@ public:
                 nostd::string_view name,
                 const trace_api::KeyValueIterable &attributes,
                 const trace_api::StartSpanOptions &options,
-                const trace_api::SpanContext &parent_span_context) noexcept;
+                const trace_api::SpanReference &parent_span_context) noexcept;
 
   ~Span() override;
 
@@ -43,7 +43,7 @@ public:
 
   bool IsRecording() const noexcept override;
 
-  trace_api::SpanContext GetContext() const noexcept override { return *span_context_.get(); }
+  trace_api::SpanReference GetContext() const noexcept override { return *span_context_.get(); }
 
 private:
   std::shared_ptr<trace_api::Tracer> tracer_;
@@ -51,7 +51,7 @@ private:
   mutable std::mutex mu_;
   std::unique_ptr<Recordable> recordable_;
   opentelemetry::core::SteadyTimestamp start_steady_time;
-  std::unique_ptr<trace_api::SpanContext> span_context_;
+  std::unique_ptr<trace_api::SpanReference> span_context_;
   bool has_ended_;
 };
 }  // namespace trace

@@ -62,7 +62,7 @@ Span::Span(std::shared_ptr<Tracer> &&tracer,
            nostd::string_view name,
            const trace_api::KeyValueIterable &attributes,
            const trace_api::StartSpanOptions &options,
-           const trace_api::SpanContext &parent_span_context) noexcept
+           const trace_api::SpanReference &parent_span_context) noexcept
     : tracer_{std::move(tracer)},
       processor_{processor},
       recordable_{processor_->MakeRecordable()},
@@ -89,8 +89,8 @@ Span::Span(std::shared_ptr<Tracer> &&tracer,
     recordable_->SetIds(trace_id, span_id, trace_api::SpanId());
   }
 
-  span_context_ = std::unique_ptr<trace_api::SpanContext>(
-      new trace_api::SpanContext(trace_id, span_id, trace_api::TraceFlags(), false));
+  span_context_ = std::unique_ptr<trace_api::SpanReference>(
+      new trace_api::SpanReference(trace_id, span_id, trace_api::TraceFlags(), false));
 
   attributes.ForEachKeyValue([&](nostd::string_view key,
                                  opentelemetry::common::AttributeValue value) noexcept {

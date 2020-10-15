@@ -85,7 +85,7 @@ public:
     }
     else
     {
-      return nostd::shared_ptr<Span>(new DefaultSpan(SpanContext::GetInvalid()));
+      return nostd::shared_ptr<Span>(new DefaultSpan(SpanReference::GetInvalid()));
     }
   }
 

@@ -4,45 +4,45 @@
 
 #include <gtest/gtest.h>
 
-using opentelemetry::trace::SpanContext;
+using opentelemetry::trace::SpanReference;
 
-TEST(SpanContextTest, IsSampled)
+TEST(SpanReferenceTest, IsSampled)
 {
-  SpanContext s1(true, true);
+  SpanReference s1(true, true);
 
   ASSERT_EQ(s1.IsSampled(), true);
 
-  SpanContext s2(false, true);
+  SpanReference s2(false, true);
 
   ASSERT_EQ(s2.IsSampled(), false);
 }
 
-TEST(SpanContextTest, HasRemoteParent)
+TEST(SpanReferenceTest, HasRemoteParent)
 {
-  SpanContext s1(true, true);
+  SpanReference s1(true, true);
 
   ASSERT_EQ(s1.HasRemoteParent(), true);
 
-  SpanContext s2(true, false);
+  SpanReference s2(true, false);
 
   ASSERT_EQ(s2.HasRemoteParent(), false);
 }
 
-TEST(SpanContextTest, TraceFlags)
+TEST(SpanReferenceTest, TraceFlags)
 {
-  SpanContext s1(true, true);
+  SpanReference s1(true, true);
 
   ASSERT_EQ(s1.trace_flags().flags(), 1);
 
-  SpanContext s2(false, true);
+  SpanReference s2(false, true);
 
   ASSERT_EQ(s2.trace_flags().flags(), 0);
 }
 
-// Test that SpanContext is invalid
-TEST(SpanContextTest, Invalid)
+// Test that SpanReference is invalid
+TEST(SpanReferenceTest, Invalid)
 {
-  SpanContext s1 = SpanContext::GetInvalid();
+  SpanReference s1 = SpanReference::GetInvalid();
   EXPECT_FALSE(s1.IsValid());
 
   // Test that trace id and span id are invalid
